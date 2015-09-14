@@ -1,0 +1,58 @@
+"*":
+  "exception-reporting":
+    userId: "0e637041-05e3-b86c-c806-c95097676fa4"
+  welcome:
+    showOnStartup: false
+  core:
+    audioBeep: false
+  editor:
+    invisibles: {}
+    showIndentGuide: true
+    softWrap: true
+  "node-debugger":
+    nodePath: "/Users/bjonica/.nvm/versions/node/v0.12.7/bin/node"
+  "git-plus": {}
+  "linter-eslint":
+    disableWhenNoEslintrcFileInPath: true
+  minimap:
+    plugins:
+      "find-and-replace": true
+      "git-diff": true
+      linter: true
+      selection: true
+      "highlight-selected": true
+      bookmarks: true
+      codeglance: true
+  "atom-beautify":
+    analytics: false
+  tabs:
+    enableVcsColoring: true
+    tabScrolling: true
+  whitespace:
+    ensureSingleTrailingNewline: false
+  "one-dark-ui":
+    layoutMode: "Compact"
+    fontSize: 10
+  "autocomplete-plus": {}
+  "git-log":
+    fontScale: 0.7
+  jshint:
+    onlyConfig: true
+  zentabs:
+    maximumOpenedTabs: 6
+    neverCloseUnsaved: true
+  "git-blame": {}
+  "merge-conflicts": {}
+  "atom-alignment":
+    addSpacePostfix: true
+    alignmentSpaceChars: [
+      "=>"
+      ":="
+      "="
+      ":"
+    ]
+  "minimap-linter":
+    markerType: "highlight-outline"
+  "minimap-codeglance": {}
+  linter: {}
+  build: {}
