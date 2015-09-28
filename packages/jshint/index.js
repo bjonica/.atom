@@ -1,7 +1,6 @@
 /** @babel */
 import {CompositeDisposable} from 'event-kit';
 import path from 'path';
-import reactDomPragma from 'react-dom-pragma';
 import lazyRequire from 'lazy-req';
 
 const lazyReq = lazyRequire(require);
@@ -10,7 +9,6 @@ const jshint = lazyReq('jshint');
 const jsxhint = lazyReq('jshint-jsx');
 const cli = lazyReq('jshint/src/cli');
 const loadConfig = lazyReq('./load-config');
-const plugin = {};
 const markersByEditorId = {};
 const errorsByEditorId = {};
 
@@ -18,6 +16,7 @@ let subscriptionTooltips = new CompositeDisposable();
 let subscriptionEvents = new CompositeDisposable();
 
 let _;
+let statusBar;
 
 const SUPPORTED_GRAMMARS = [
 	'source.js',
@@ -112,8 +111,6 @@ const getMarkerAtRow = (editor, row) => {
 };
 
 const updateStatusbar = () => {
-	const statusBar = atom.views.getView(atom.workspace).querySelector('.status-bar');
-
 	if (!statusBar) {
 		return;
 	}
@@ -243,14 +240,8 @@ const lint = () => {
 		return;
 	}
 
-	const origCode = editor.getText();
-	const grammarScope = editor.getGrammar().scopeName;
-	const isJsx = grammarScope === 'source.jsx' || grammarScope === 'source.js.jsx';
-	const code = isJsx ? reactDomPragma(origCode) : origCode;
-	const pragmaWasAdded = code !== origCode;
-
 	try {
-		linter(code, config, config.globals);
+		linter(editor.getText(), config, config.globals);
 	} catch (err) {}
 
 	removeErrorsForEditorId(editor.id);
@@ -262,10 +253,6 @@ const lint = () => {
 		// aggregate same-line errors
 		const ret = [];
 		_.each(errors, el => {
-			if (pragmaWasAdded) {
-				el.line--;
-			}
-
 			const l = el.line;
 
 			if (Array.isArray(ret[l])) {
@@ -316,7 +303,7 @@ const registerEvents = () => {
 	}));
 };
 
-export const config = plugin.config = {
+export const config = {
 	onlyConfig: {
 		type: 'boolean',
 		default: false,
@@ -335,7 +322,7 @@ export const config = plugin.config = {
 
 let subscriptionMain = null;
 
-export const activate = plugin.activate = () => {
+export const activate = () => {
 	_ = lodash();
 	debouncedLint = _.debounce(lint, 200);
 	debouncedDisplayErrors = _.debounce(displayErrors, 200);
@@ -349,10 +336,10 @@ export const activate = plugin.activate = () => {
 	subscriptionMain.add(atom.commands.add('atom-workspace', 'jshint:go-to-next-error', goToNextError));
 };
 
-export const deactivate = plugin.deactivate = () => {
+export const deactivate = () => {
 	subscriptionTooltips.dispose();
 	subscriptionEvents.dispose();
 	subscriptionMain.dispose();
 };
 
-export default plugin;
+export const consumeStatusBar = instance => statusBar = instance;

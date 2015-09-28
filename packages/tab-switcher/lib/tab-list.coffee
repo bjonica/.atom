@@ -1,6 +1,11 @@
 {CompositeDisposable} = require 'atom'
 TabListView = require './tab-list-view'
 
+find = (list, predicate) ->
+  for element in list
+    return element if predicate(element)
+  null
+
 module.exports =
 class TabList
   constructor: (pane, data, version) ->
@@ -19,6 +24,12 @@ class TabList
       @tabs.push(tab)
       @view.tabAdded(tab)
 
+    @disposable.add @pane.onWillRemoveItem (event) =>
+      if @pane.getActiveItem() is event.item
+        tab = find @tabs, (tab) -> tab.item isnt event.item
+        if tab
+          @pane.activateItem(tab.item)
+
     @disposable.add @pane.onDidRemoveItem (item) =>
       index = @_findItemIndex(item.item)
       return if index is null
@@ -27,8 +38,8 @@ class TabList
     @disposable.add @pane.observeActiveItem (item) =>
       @_moveItemToFront(item)
 
-    @disposable.add @pane.onDidDestroy =>
-      @tabs = []
+  updateAnimationDelay: (delay) ->
+    @view.updateAnimationDelay(delay)
 
   _buildTabs: (items, data, version) ->
     tabs = items.map (item) => {id: @lastId += 1, item: item}
@@ -47,6 +58,7 @@ class TabList
 
   destroy: ->
     @pane = null
+    @tabs = []
     @disposable.dispose()
     @view.destroy()
 

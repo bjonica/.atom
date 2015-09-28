@@ -5,6 +5,10 @@
     showOnStartup: false
   core:
     audioBeep: false
+    themes: [
+      "one-dark-ui"
+      "gruvbox"
+    ]
   editor:
     invisibles: {}
     showIndentGuide: true
@@ -39,8 +43,8 @@
   jshint:
     onlyConfig: true
   zentabs:
-    maximumOpenedTabs: 6
     neverCloseUnsaved: true
+    maximumOpenedTabs: 7
   "git-blame": {}
   "merge-conflicts": {}
   "atom-alignment":
@@ -56,3 +60,6 @@
   "minimap-codeglance": {}
   linter: {}
   build: {}
+  "atom-ternjs":
+    lint: false
+    sort: false

@@ -42,8 +42,11 @@ class TabListView
 
     @_buildList()
 
-    @modalPanel = atom.workspace.addModalPanel(item: vert, visible: false)
-    vert.closest('atom-panel').classList.add('tab-switcher')
+    @modalPanel = atom.workspace.addModalPanel
+      item: vert
+      visible: false
+      className: 'tab-switcher'
+    @panel = vert.parentNode
 
     @disposable.add @ol.addEventListener 'mouseover', (event) =>
       if (li = event.target.closest('li'))
@@ -54,6 +57,13 @@ class TabListView
       if (li = event.target.closest('li'))
         id = parseInt(li.getAttribute('data-id'))
         tabSwitcher.select(id)
+
+  updateAnimationDelay: (delay) ->
+    console.log 'updating animation delay', delay
+    if delay == 0
+      @panel.style.transitionDelay = ''
+    else
+      @panel.style.transitionDelay = "#{delay}s"
 
   tabAdded: (tab) ->
     @items[tab.id] = @_makeItem(tab)
@@ -72,28 +82,25 @@ class TabListView
     if tab
       @currentItem = @items[tab.id]
       @currentItem.classList.add('current')
+      @scrollToCurrentTab()
 
   destroy: ->
     @modalPanel.destroy()
     @disposable.dispose()
 
   show: ->
-    if (currentTab = @tabSwitcher.tabs[@tabSwitcher.currentIndex])
-      view = @items[currentTab.id]
-      offset = view.offsetTop - (@ol.clientHeight - view.offsetHeight)/2
-      @ol.scrollTop = Math.max(offset, 0)
+    @scrollToCurrentTab()
     panel = @ol.closest('atom-panel')
     @modalPanel.show()
     @ol.focus()
+    setTimeout => @panel.classList.add('is-visible')
 
     invokeSelect = (event) =>
       if not (event.ctrlKey or event.altKey or event.shiftKey or event.metaKey)
-        console.log 'selecting'
         @tabSwitcher.select()
         unbind()
 
     invokeCancel = (event) =>
-      console.log 'canceling'
       @tabSwitcher.cancel()
       unbind()
 
@@ -106,7 +113,14 @@ class TabListView
       document.removeEventListener 'mouseup', invokeSelect
       @ol.removeEventListener 'blur', invokeCancel
 
+  scrollToCurrentTab: ->
+    if (currentTab = @tabSwitcher.tabs[@tabSwitcher.currentIndex])
+      view = @items[currentTab.id]
+      offset = view.offsetTop - (@ol.clientHeight - view.offsetHeight)/2
+      @ol.scrollTop = Math.max(offset, 0)
+
   hide: ->
+    @panel.classList.remove('is-visible')
     @modalPanel.hide()
 
   _makeItem: (tab) ->
