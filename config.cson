@@ -56,10 +56,19 @@
       ":"
     ]
   "minimap-linter":
-    markerType: "highlight-outline"
+    markerType: "line"
   "minimap-codeglance": {}
-  linter: {}
+  linter:
+    showErrorPanel: false
   build: {}
   "atom-ternjs":
     lint: false
     sort: false
+  "markdown-writer":
+    fileExtension: ".md"
+    siteEngine: "html"
+  "highlight-line": {}
+  "color-tabs":
+    backgroundStyle: "none"
+    borderSize: 2
+    borderStyle: "bottom"

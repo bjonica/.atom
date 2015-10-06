@@ -19,3 +19,11 @@
 # If you are unfamiliar with CSON, you can read more about it in the
 # Atom Flight Manual:
 # https://atom.io/docs/latest/using-atom-basic-customization#cson
+
+'.js':
+  'copyright notice':
+      'prefix': 'legal',
+      'body': '/*\n
+ * Yuri\n
+ * Copyright (c) 2015 Yieldbot, Inc. - All rights reserved.\n
+ */\n'
